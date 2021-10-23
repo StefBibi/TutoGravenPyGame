@@ -17,7 +17,7 @@ class Player(pygame.sprite.Sprite):
         # constructeur classe parent
         super().__init__()
         # attribut Player
-        self.health = 95
+        self.health = 100
         self.max_health = 100
         self.attack = 20 
         self.velocity = 5
@@ -37,7 +37,10 @@ class Player(pygame.sprite.Sprite):
     # methode pour infliger des degats
     # avec en argument la perte de pv
     def damage(self, damage):
-        self.health -= damage
+        if self.health - damage > damage:
+            self.health -= damage
+        else:
+            self.game.game_over()
         
         
     # methode pour gerer la barre de vie avec en argument

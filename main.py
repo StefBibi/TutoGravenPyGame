@@ -5,6 +5,7 @@ Created on Thu Oct 14 21:10:30 2021
 @author: Matymate
 """
 import time
+import math
 # import la lib pygame
 import pygame
 # import la classe Game du script game.py
@@ -21,6 +22,21 @@ screen = pygame.display.set_mode((1080, 720))
 # definit une image
 background = pygame.image.load('assets/bg.jpg')
 
+# importer baniere debut du jeu
+banner = pygame.image.load('assets/banner.png')
+# redimension (en ecrasant)
+banner = pygame.transform.scale(banner, (500, 500))
+# recupe le rectangle associé a l'image
+banner_rect = banner.get_rect()
+banner_rect.x = math.ceil(screen.get_width()/4)
+
+# importe un bouton pour lancer la partie
+play_button = pygame.image.load('assets/button.png')
+play_button = pygame.transform.scale(play_button,(400, 150))
+play_button_rect = play_button.get_rect()
+play_button_rect.x = math.ceil(screen.get_width()/3.33)
+play_button_rect.y = math.ceil(screen.get_height()/2)
+
 # instanciation du Jeu
 game = Game()
 
@@ -34,32 +50,15 @@ while running:
     # injecte l'image dans l'ecran et la positionne
     screen.blit(background, (0,-200))
     
-    # applique l'image du joueur dans l'ecran et la positionne
-    screen.blit(game.player.image, game.player.rect)
-    # actualise la barre de vie du joueur et l'affiche
-    game.player.update_health_bar(screen)
-
-    # recupe les projectiles du joueur et les gere
-    for projectile in game.player.all_projectiles:
-        projectile.move()
-        
-    # applique le groupe de projectiles a l'ecran
-    game.player.all_projectiles.draw(screen)
-        
-    # recupe les monstre du jeu et les gere
-    for monster in game.all_monsters:
-        monster.forward()
-        monster.update_health_bar(screen)
-            
-    # applique le groupe de monstree a l'ecran
-    game.all_monsters.draw(screen)
-    
-    # verifie si joueur se deplace a droite et dans limite
-    if game.pressed.get(pygame.K_RIGHT) and (game.player.rect.x + game.player.rect.width) < screen.get_width():
-        game.player.move_right()
-    # verifie si joueur se deplace a gauche et dans limite
-    elif game.pressed.get(pygame.K_LEFT) and game.player.rect.x > 0:
-        game.player.move_left()
+    # si le jeu a bien débuté
+    if game.is_playing:
+        # methode pour gerer les elements du jeu et les
+        # afficher a l'ecran
+        game.update(screen)
+    else:
+        # ajout ecran de bienvenue et un bouton de lancement
+        screen.blit(play_button, play_button_rect)
+        screen.blit(banner, banner_rect)
     
     # rafraichit l'ecran
     pygame.display.flip()
@@ -82,4 +81,11 @@ while running:
         # sinon touche du clavier lachée
         elif event.type == pygame.KEYUP:
             game.pressed[event.key] = False
+            
+        # sinon clic de la souris
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Verifi si souris en collision avec bouton de lancement
+            if play_button_rect.collidepoint(event.pos):
+                # lancement du jeu
+                game.start()
     

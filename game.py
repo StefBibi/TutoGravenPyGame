@@ -11,6 +11,8 @@ import pygame
 from player import Player
 # import la classe Monster du script monster.py
 from monster import Monster
+# import la classe CometFallEvent du script comet_event.py
+from comet_event import CometFallEvent
 
 # creation classe pour gerer notre jeu
 class Game:
@@ -18,7 +20,7 @@ class Game:
     # constructeur et attributs
     def __init__(self):
         # var pour indiquer si Game a commence ou non
-        self.is_playing = False
+        self.is_playing = False # False
         # instanciation du joueur et passe Game(=self) en argument
         self.player = Player(self)
         # groupe de un seul player pour y ranger player
@@ -28,6 +30,8 @@ class Game:
         self.pressed = {}
         # groupe de monstre
         self.all_monsters = pygame.sprite.Group()
+        # genere evenement des comete et passe l'instance de game
+        self.comet_event = CometFallEvent(self)
 
         
     # methode pour lancer le jeu et initialiser les monstres
@@ -55,13 +59,15 @@ class Game:
     
     # methode pour reinitialiser game si over
     def game_over(self):
-        # RAZ : zero monstre, reinitialise joueur et ecran d'accueil
+        # RAZ : zero monstre, zero comete
+        # reinitialise joueur et ecran d'accueil
         self.all_monsters = pygame.sprite.Group()
+        self.comet_event.all_comets = pygame.sprite.Group()
         self.player.health = self.player.max_health
         self.player.rect.x = 400
         self.player.rect.y = 500
         self.is_playing = False
-        
+        self.comet_event.reset_percent()
     
     # methode pour gerer les elements du jeu et les
     # afficher a l'ecran
@@ -70,6 +76,9 @@ class Game:
         screen.blit(self.player.image, self.player.rect)
         # actualise la barre de vie du joueur et l'affiche
         self.player.update_health_bar(screen)
+        
+        # actualise la barre de charge des cometes
+        self.comet_event.update_bar(screen)
     
         # recupe les projectiles du joueur et les gere
         for projectile in self.player.all_projectiles:
@@ -82,9 +91,20 @@ class Game:
         for monster in self.all_monsters:
             monster.forward()
             monster.update_health_bar(screen)
+            
+        # recupe les cometes du jeu et les gere
+        for comet in self.comet_event.all_comets:
+            comet.fall()
                 
-        # applique le groupe de monstree a l'ecran
+        # applique le groupe de monstre a l'ecran
         self.all_monsters.draw(screen)
+        
+        # recupe les cometes du jeu et les gere
+        for comet in self.comet_event.all_comets:
+            comet.fall()
+        
+        # applique le groupe de comete a l'ecran
+        self.comet_event.all_comets.draw(screen)
         
         # verifie si joueur se deplace a droite et dans limite
         if self.pressed.get(pygame.K_RIGHT) and (self.player.rect.x + self.player.rect.width) < screen.get_width():

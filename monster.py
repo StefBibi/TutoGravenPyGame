@@ -41,10 +41,19 @@ class Monster(pygame.sprite.Sprite):
         # si PV a zero, reapparait comme un 
         #nouveau monstre (astuce pour optimiser mémoire)
         if self.health <= 0:
+            # reapparait a son origine
             self.health = 90
             self.velocity = random.randint(1,2)
             self.rect.x = 1000 + random.randint(0, 300)
             self.rect.y = 540
+            
+            # si la barre des comete est full
+            if self.game.comet_event.is_full():
+                # retire le monstre du jeu
+                self.game.all_monsters.remove(self)
+                   
+                # tentative declenchement des cometes
+                self.game.comet_event.attempt_fall()
 
 
     # methode pour gerer la barre de vie avec en argument

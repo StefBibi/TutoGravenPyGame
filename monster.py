@@ -7,16 +7,17 @@ Created on Tue Oct 19 20:12:59 2021
 
 import pygame
 import random
+import animation
 
 # creation classe pour representer la notion de monstre
 # et qui herite de Sprite pour etre un element graphique
-class Monster(pygame.sprite.Sprite):
-    
+#class Monster(pygame.sprite.Sprite):
+class Monster(animation.AnimateSprite):  
     
     # constructeur et attributs
     def __init__(self, game):
         # constructeur classe parent
-        super().__init__()
+        super().__init__("mummy")
         # attributs Monster
         self.health = 95
         self.max_health = 100
@@ -24,13 +25,15 @@ class Monster(pygame.sprite.Sprite):
         self.velocity = random.randint(1,2)
         # memorise le Game dans le Player
         self.game = game
-        # definit un fichier a l'image
-        self.image = pygame.image.load('assets/mummy.png')
+        # definit un fichier a l'image mais retiré car dans AnimateSprite
+        # self.image = pygame.image.load('assets/mummy.png')
         # definit un rectangle selon l'image chargee
         self.rect = self.image.get_rect()
         # definit une position de depart de l'image
         self.rect.x = 1000 + random.randint(0, 300)
         self.rect.y = 540
+        # active l'animation a la creation
+        self.start_animation()
 
 
     # methode pour infliger des degats
@@ -54,6 +57,11 @@ class Monster(pygame.sprite.Sprite):
                    
                 # tentative declenchement des cometes
                 self.game.comet_event.attempt_fall()
+                
+                
+    # definit une methode pour animer le monstre
+    def update_animation(self):
+        self.animate(loop=True)
 
 
     # methode pour gerer la barre de vie avec en argument

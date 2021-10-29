@@ -7,15 +7,16 @@ Created on Sun Oct 17 17:56:22 2021
 import pygame
 # import la classe Projectile du script projectile.py
 from projectile import Projectile
+import animation
 
 # creation classe pour representer le joueur
 # et qui herite de Sprite pour etre un element graphique
-class Player(pygame.sprite.Sprite):
+class Player(animation.AnimateSprite):
     
     # constructeur avec argument et attributs
     def __init__(self, game):
         # constructeur classe parent
-        super().__init__()
+        super().__init__('player')
         # attribut Player
         self.health = 100
         self.max_health = 100
@@ -25,13 +26,18 @@ class Player(pygame.sprite.Sprite):
         self.game = game
         # cree un groupe pour gerer les projectiles
         self.all_projectiles = pygame.sprite.Group()
-        # definit un fichier a l'image
-        self.image = pygame.image.load('assets/player.png')
+        # definit un fichier a l'image mais retiré car dans AnimateSprite
+        # self.image = pygame.image.load('assets/player.png')
         # definit un rectangle selon l'image chargee
         self.rect = self.image.get_rect()
         # definit une position de depart de l'image
         self.rect.x = 400
         self.rect.y = 500
+        
+        
+   # definit une methode pour animer le player
+    def update_animation(self):
+        self.animate()
         
         
     # methode pour infliger des degats
@@ -58,6 +64,8 @@ class Player(pygame.sprite.Sprite):
         projectile = Projectile(self)
         # ajoute le projectile au groupe de projectile
         self.all_projectiles.add(projectile)
+        # active l'animation au lancement
+        self.start_animation()
         
         
     # methode de deplacment joueur droite

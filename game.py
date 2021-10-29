@@ -76,6 +76,8 @@ class Game:
         screen.blit(self.player.image, self.player.rect)
         # actualise la barre de vie du joueur et l'affiche
         self.player.update_health_bar(screen)
+        # actualise l'animation du joueur
+        self.player.update_animation()
         
         # actualise la barre de charge des cometes
         self.comet_event.update_bar(screen)
@@ -91,6 +93,7 @@ class Game:
         for monster in self.all_monsters:
             monster.forward()
             monster.update_health_bar(screen)
+            monster.update_animation()
             
         # recupe les cometes du jeu et les gere
         for comet in self.comet_event.all_comets:

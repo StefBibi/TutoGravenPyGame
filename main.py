@@ -10,9 +10,14 @@ import math
 import pygame
 # import la classe Game du script game.py
 from game import Game
+import sys
 
 # initialise la lib pygame
 pygame.init()
+
+# definit une clock pour gerer la frapidite du jeu
+clock = pygame.time.Clock()
+FPS = 60
 
 # titre de la fenetre
 pygame.display.set_caption('Commet fall game')
@@ -45,7 +50,7 @@ running=True
 # Boucle d'affichage
 while running:
     # sinon move trop rapide
-    time.sleep(0.010)
+    # time.sleep(0.010)
     
     # injecte l'image dans l'ecran et la positionne
     screen.blit(background, (0,-200))
@@ -69,6 +74,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
+            sys.exit()
             
         # sinon touche du clavier appuyée
         elif event.type == pygame.KEYDOWN:
@@ -76,7 +82,13 @@ while running:
             
             #detecte si touche espace appuyée pour lancer projectile
             if event.key ==  pygame.K_SPACE:
-                game.player.launch_projectile()
+                if game.is_playing:
+                    game.player.launch_projectile()
+                else:
+                    # lancement du jeu
+                    game.start()
+                    # joue un son
+                    game.sound_manager.play('click')
 
         # sinon touche du clavier lachée
         elif event.type == pygame.KEYUP:
@@ -88,4 +100,10 @@ while running:
             if play_button_rect.collidepoint(event.pos):
                 # lancement du jeu
                 game.start()
+                # joue un son
+                game.sound_manager.play('click')
+                
+                
+    # fixer le nb de FPS sur la clock
+    clock.tick(FPS)
     

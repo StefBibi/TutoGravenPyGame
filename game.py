@@ -13,6 +13,8 @@ from player import Player
 from monster import Mummy, Alien
 # import la classe CometFallEvent du script comet_event.py
 from comet_event import CometFallEvent
+# import la classe SoundManager
+from sounds import SoundManager
 
 # creation classe pour gerer notre jeu
 class Game:
@@ -32,6 +34,15 @@ class Game:
         self.all_monsters = pygame.sprite.Group()
         # genere evenement des comete et passe l'instance de game
         self.comet_event = CometFallEvent(self)
+        # mettre score a 0
+        self.font = pygame.font.Font("assets/PottaOne-Regular.ttf",24)
+        self.score = 0
+        # initialise la gestion des sons
+        self.sound_manager = SoundManager()
+
+    # methode pour ajouter des points au score
+    def add_score(self, points=10):
+        self.score += points
 
         
     # methode pour lancer le jeu et initialiser les monstres
@@ -70,10 +81,18 @@ class Game:
         self.player.rect.y = 500
         self.is_playing = False
         self.comet_event.reset_percent()
+        self.score = 0
+        # joue le son
+        self.sound_manager.play('game_over')
+        
     
     # methode pour gerer les elements du jeu et les
     # afficher a l'ecran
     def update(self, screen):
+        # afficher le scrore a l'ecran
+        score_text = self.font.render(f"Score : {self.score}", 1, (0, 0, 0))
+        screen.blit(score_text, (20, 20))
+        
         # applique l'image du joueur dans l'ecran et la positionne
         screen.blit(self.player.image, self.player.rect)
         # actualise la barre de vie du joueur et l'affiche

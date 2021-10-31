@@ -29,9 +29,13 @@ class Comet(pygame.sprite.Sprite):
         self.rect.x = random.randint(20,1000)
         self.rect.y = -random.randint(0,300)
         
+        
     # methode pour detruitre la comete
     def remove(self):
         self.comet_event.all_comets.remove(self)
+        # joue le son
+        self.comet_event.game.sound_manager.play('meteorite')
+        
         # verifit si plus de comete
         if len(self.comet_event.all_comets) == 0 :
             # remettre la barre a 0
@@ -41,6 +45,7 @@ class Comet(pygame.sprite.Sprite):
             self.comet_event.game.spawn_monster(Mummy)
             self.comet_event.game.spawn_monster(Mummy)
             self.comet_event.game.spawn_monster((Alien))
+        
         
     # methode pour faire chuter la comete
     def fall(self):

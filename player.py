@@ -66,6 +66,8 @@ class Player(animation.AnimateSprite):
         self.all_projectiles.add(projectile)
         # active l'animation au lancement
         self.start_animation()
+        # joue le son
+        self.game.sound_manager.play('tir')
         
         
     # methode de deplacment joueur droite

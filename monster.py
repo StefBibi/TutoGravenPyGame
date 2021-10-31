@@ -38,12 +38,18 @@ class Monster(animation.AnimateSprite):
         self.rect.y = 540 - offset
         # active l'animation a la creation
         self.start_animation()
+        self.score_amount = 10
 
 
-    # methgode pour choisir vitesse de l'entite courante
+    # methode pour changer le score de point
+    def set_score_amount(self, points):
+        self.score_amount = points
+
+    # methode pour choisir vitesse de l'entite courante
     def set_speed(self, speed):
         self.defaul_speed = speed
         self.velocity = random.randint(1, speed)
+        
 
     # methode pour infliger des degats
     # avec en argument la perte de pv
@@ -58,6 +64,9 @@ class Monster(animation.AnimateSprite):
             self.velocity = random.randint(1,self.defaul_speed)
             self.rect.x = 1000 + random.randint(0, 300)
             self.rect.y = 540 - self.offset
+            
+            # ajoute des points au score
+            self.game.add_score(self.score_amount)
             
             # si la barre des comete est full
             if self.game.comet_event.is_full():
@@ -107,6 +116,7 @@ class Mummy(Monster):
     def __init__(self, game):
         super().__init__(game, "mummy", (130, 130))
         self.set_speed(3)
+        self.set_score_amount(20)
   
         
 # definir classe Alien qui herite de Monster
@@ -119,3 +129,4 @@ class Alien(Monster):
         self.max_health = 250
         self.attack = 2
         self.set_speed(1)
+        self.set_score_amount(50)

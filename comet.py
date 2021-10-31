@@ -7,6 +7,8 @@ Created on Sun Oct 24 20:36:38 2021
 
 import pygame
 import random
+# import la classe Monster du script monster.py
+from monster import Mummy, Alien
 
 # creer classe pour gerer une comete
 # et qui herite de Sprite pour etre un element graphique
@@ -17,7 +19,7 @@ class Comet(pygame.sprite.Sprite):
         # constructeur classe parent
         super().__init__()
         # attribut Comet
-        self.velocity = random.randint(1,2)
+        self.velocity = random.randint(2,4)
         self.comet_event = comet_event
         # definit un fichier a l'image
         self.image = pygame.image.load('assets/comet.png')
@@ -35,8 +37,10 @@ class Comet(pygame.sprite.Sprite):
             # remettre la barre a 0
             self.comet_event.reset_percent()
             # reapparition des monstres
-            self.comet_event.game.spawn_monster()
-            self.comet_event.game.spawn_monster()
+            # ou faire : self.comet_event.game.start() 
+            self.comet_event.game.spawn_monster(Mummy)
+            self.comet_event.game.spawn_monster(Mummy)
+            self.comet_event.game.spawn_monster((Alien))
         
     # methode pour faire chuter la comete
     def fall(self):

@@ -10,7 +10,7 @@ import pygame
 # import la classe Player du script player.py
 from player import Player
 # import la classe Monster du script monster.py
-from monster import Monster
+from monster import Mummy, Alien
 # import la classe CometFallEvent du script comet_event.py
 from comet_event import CometFallEvent
 
@@ -37,14 +37,16 @@ class Game:
     # methode pour lancer le jeu et initialiser les monstres
     def start(self):
         self.is_playing = True
-        # genere un monstre et un second
-        self.spawn_monster()
-        self.spawn_monster()
-
+        # genere un monstre Mummy et un second
+        self.spawn_monster(Mummy)
+        self.spawn_monster(Mummy)
+        # genere un monstre Alien
+        self.spawn_monster(Alien)
     
-    # methode pour creer un monstre
-    def spawn_monster(self):
-        monster = Monster(self)
+    # methode pour creer un monstre Mummy, Alien ....
+    def spawn_monster(self, monster_class_name):
+        #monster = Mummy(self)
+        monster = monster_class_name.__call__(self)
         self.all_monsters.add(monster)
 
         
@@ -94,10 +96,6 @@ class Game:
             monster.forward()
             monster.update_health_bar(screen)
             monster.update_animation()
-            
-        # recupe les cometes du jeu et les gere
-        for comet in self.comet_event.all_comets:
-            comet.fall()
                 
         # applique le groupe de monstre a l'ecran
         self.all_monsters.draw(screen)

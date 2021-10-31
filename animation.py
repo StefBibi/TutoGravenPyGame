@@ -13,10 +13,14 @@ class AnimateSprite(pygame.sprite.Sprite):
 
     # constructeur et argument pour savoir a quel
     # sprite s'applique l'animation
-    def __init__(self, sprite_name):
+    # et sa taille en option
+    def __init__(self, sprite_name, size=(200, 200)):
         super().__init__()
+        self.size = size
         # definit un fichier a l'image
         self.image = pygame.image.load(f'assets/{sprite_name}.png')
+        # redimensionne l'image a la taille demandée
+        self.image = pygame.transform.scale(self.image, size)
         self.current_image = 0 # pour commencer l'animation a l'image 0
         self.images = animations.get(sprite_name)
         self.animation = False
@@ -44,7 +48,8 @@ class AnimateSprite(pygame.sprite.Sprite):
                 
             # modifie l'image par la suivante
             self.image = self.images[self.current_image]
-            
+            self.image = pygame.transform.scale(self.image, self.size)
+
 
 # definit une fonction pour charger les images d'un Sprite
 def load_animation_images(sprite_name):
@@ -69,5 +74,6 @@ def load_animation_images(sprite_name):
 # player -> [...player1.png, player2.png,  ...]
 animations = {
     'mummy': load_animation_images('mummy'),
-    'player': load_animation_images('player')
+    'player': load_animation_images('player'),
+    'alien': load_animation_images('alien')
     }

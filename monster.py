@@ -15,26 +15,35 @@ import animation
 class Monster(animation.AnimateSprite):  
     
     # constructeur et attributs
-    def __init__(self, game):
+    # en lui passant l'objet Game,
+    # le nom/type du monstre, sa taille
+    # et un offset de la position
+    def __init__(self, game, name, size, offset=0):
         # constructeur classe parent
-        super().__init__("mummy")
+        super().__init__(name, size)
         # attributs Monster
         self.health = 95
         self.max_health = 100
         self.attack = 1
-        self.velocity = random.randint(1,2)
+        #self.velocity = random.randint(1,2)
         # memorise le Game dans le Player
         self.game = game
+        self.offset = offset
         # definit un fichier a l'image mais retiré car dans AnimateSprite
         # self.image = pygame.image.load('assets/mummy.png')
         # definit un rectangle selon l'image chargee
         self.rect = self.image.get_rect()
         # definit une position de depart de l'image
         self.rect.x = 1000 + random.randint(0, 300)
-        self.rect.y = 540
+        self.rect.y = 540 - offset
         # active l'animation a la creation
         self.start_animation()
 
+
+    # methgode pour choisir vitesse de l'entite courante
+    def set_speed(self, speed):
+        self.defaul_speed = speed
+        self.velocity = random.randint(1, speed)
 
     # methode pour infliger des degats
     # avec en argument la perte de pv
@@ -46,9 +55,9 @@ class Monster(animation.AnimateSprite):
         if self.health <= 0:
             # reapparait a son origine
             self.health = 90
-            self.velocity = random.randint(1,2)
+            self.velocity = random.randint(1,self.defaul_speed)
             self.rect.x = 1000 + random.randint(0, 300)
-            self.rect.y = 540
+            self.rect.y = 540 - self.offset
             
             # si la barre des comete est full
             if self.game.comet_event.is_full():
@@ -89,4 +98,24 @@ class Monster(animation.AnimateSprite):
         # sinon le monstre est en collision et attque le joueur
         else:
             self.game.player.damage(self.attack)
+      
             
+# definir classe Mummy qui herite de Monster
+class Mummy(Monster):
+    
+    # constructeur de Mummy
+    def __init__(self, game):
+        super().__init__(game, "mummy", (130, 130))
+        self.set_speed(3)
+  
+        
+# definir classe Alien qui herite de Monster
+class Alien(Monster):
+    
+    # constructeur de Alien
+    def __init__(self, game):
+        super().__init__(game, "alien", (300, 300), 130)      
+        self.health = 250
+        self.max_health = 250
+        self.attack = 2
+        self.set_speed(1)
